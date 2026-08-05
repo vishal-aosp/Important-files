@@ -1,0 +1,181 @@
+Laptop Pass:
+Pers!S*!@&@@)@)
+
+LeetCode:
+
+username: vishal8299
+pass: Pers!S*!@&@@)@0
+email: vss812795@gmail.com
+
+Accenture pass: Pers!S*!@&@@)@0
+
+
+SeCommands:
+
+
+Build_Server ->
+
+ssh -o ServerAliveInterval=60 srv-def-smbuild.tmt.telital.com
+
+ssh -o ServerAliveInterval=120 srv-itt-bjkm15.tmt.telital.com
+
+ADP Pass:  Pers!S*!@&@@)@0
+
+
+se250b4 build steps ->
+
+Source code  location:
+1. source code with repo sync done.
+/home/TMT/bhaskarna/uart/se250b4_chipcode_r3_0_00018_HLOS_repo_sync.tar.gz
+  
+2. telit patches
+
+/home/TMT/bhaskarna/uart/telit
+
+
+Steps:
+1. cp -rf /home/TMT/bhaskarna/uart/se250b4_chipcode_r3_0_00018_HLOS_repo_sync.tar.gz .
+
+2. tar -zxvf se250b4_chipcode_r3_0_00018_HLOS_repo_sync.tar.gz
+
+3. rename the folder as se250b4
+
+4. cp -rf /home/TMT/bhaskarna/uart/telit  ~/se250b4/
+
+5. cd ~/se250b4_build/se250b4/telit/
+
+6.  ./se250b4.sh
+
+
+Now the code is ready for build
+refer section 4.6 of user guide
+
+To build HLOS image:
+./build_system_ext.sh --model=0UE0
+
+To build another images:
+./build_system_ext.sh --model=0UE0 --build=TZ
+./build_system_ext.sh --model=0UE0 --build=BOOT
+./build_system_ext.sh --model=0UE0 --build=ADSP
+
+Create final image:
+./metabuild.sh
+
+Build Variant:
+EU: --model=0UE0
+NA:  --model=0UWW
+WiFi: --model=ZUWW
+
+Keyword: FW: Steps to  fix avc denied error
+
+Detect i2c:
+i2cdetect -l
+
+Find Command:
+find -type f -name *nfc*.ko
+find -type f -name *nxp*.ko
+
+Environment setup:
+ cd LA.QSSI.13.0/LINUX/android/
+source build/envsetup.sh
+lunch qssi_32go-userdebug
+
+No Temt option:
+Add in build_system_ext.sh
+
+--no_tmp \
+--image super \
+
+Build particular image:
+make dtboimage -j32
+make bootimage -j32
+
+copy as parent dir:
+cp --parents LA.UM.9.15.2/LINUX/android/vendor/qcom/proprietary/prebuilt_HY11/target/product/bengal_32go/prebuilt.mk ~/bakup/
+
+size of directory or folder in linux:
+disk space or usage
+ 
+du -hc --max-depth=0 se250/
+
+cp -rf 09_Dec_25/* ./
+ 
+
+
+Sim slot1 Disable:
+
+LA.UM/android/device/qcom/common/base.mk 
+
+
+docker exec -it home_vishalss_testandrease250b4_2.3 bash
+docker ps
+
+ se250b4_prep1.sh
+se250b4_docker_run.sh
+ 
+
+ adb shell uname -m
+adb shell getprop ro.product.cpu.abi
+ 
+
+# collect crashdump log
+
+LA.UM.9.15.2/LINUX/android/kernel/msm-4.19/arch/arm/configs/vendor/bengal_defconfig
+CONFIG_POWER_RESET_MSM=y
+CONFIG_QCOM_DLOAD_MODE=y
+CONFIG_POWER_RESET_QCOM_DOWNLOAD_MODE_DEFAULT=y
+
+
+echo 1 > /sys/module/msm_poweroff/parameters/download_mode
+echo 1 > /sys/module/subsystem_restart/parameters/enable_ramdumps	 	
+echo c > /proc/sysrq-trigger
+
+
+
+
+
+# symbol inject error fix
+
+ Empty build number causing symbol_inject failure
+---------------------------------------------------
+Error seen in log:
+out/host/linux-x86/bin/symbol_inject ... -v $(cat out/soong/build_number.txt)
+flag needs an argument: -v
+
+File to edit:
+\\srv-itt-bjkm15\vishalss\c25\LA.QSSI.13.0\LINUX\android\build.sh
+
+Insert this block after:
+ENABLE_AB=${ENABLE_AB:-true}
+ARGS="$@"
+QSSI_ARGS="$ARGS ENABLE_AB=$ENABLE_AB"
+
+Insert:
+if [[ -z "$BUILD_NUMBER" ]]; then
+    BUILD_USER=$(whoami 2>/dev/null | cut -c1-6)
+    BUILD_USER=${BUILD_USER:-local}
+    BUILD_NUMBER="eng.${BUILD_USER}.$(date '+%Y%m%d.%H%M%S')"
+    export BUILD_NUMBER
+fi
+
+mkdir -p out/soong
+printf '%s' "$BUILD_NUMBER" > out/soong/build_number.txt
+
+Reason:
+The file out/soong/build_number.txt was present but empty, so host-tool version stamping failed for fastboot, aapt2, and aapt.
+
+
+
+
+
+
+
+
+# GitHub copilot
+username: Vishalind247
+
+
+#persional git 
+vishal-aosp
+Pers!S*!@&@@)@&
+ 
